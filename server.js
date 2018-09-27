@@ -47,33 +47,28 @@ app.get("/", function(req, res) {
     // display exphbs page with all data
 });
 
-// app.get("/scrape", function(req,res) {
+app.get("/scrape", function(req,res) {
+    axios.get("https://www.npr.org/sections/news/").then(function(response) {
+        var $ = cheerio.load(response.data);
+    
+        $("article.has-image").each(function(i, element) {
+            var result = {};
+    
+            result.title = $(this).children("div.item-info").children("h2").children("a").text()
+            result.image = $(this).children("div.item-image").children("div.imagewrap").children("a").children("img").attr("src")
+            result.link = $(this).children("div.item-info").children("h2").children("a").attr("href")
+    
+            // Create a new Article object
+            db.Article.create(result)
+            .then(function(dbArticle) {
+                console.log(dbArticle)
+            })
+            .catch(function(err) {
+                return res.json(err);
+            });
+        });
 
-//     axios.get("").then(function(response) {
-//         var $ = cheerio.load(response.data);
-
-//         $("article.has-image").each(function(i, element) {
-//             var result = {};
-
-//             result.first = $(this)
-//             result.sub = $(this).children("div.item-info").children("h2").children("a")
-
-//             console.log(result)
-//         })
-//     })
-// })
-
-axios.get("https://www.npr.org/sections/news/").then(function(response) {
-    var $ = cheerio.load(response.data);
-
-    $("article.has-image").each(function(i, element) {
-        var result = {};
-
-        result.title = $(this).children("div.item-info").children("h2").children("a").text()
-        result.image = $(this).children("div.item-image").children("div.imagewrap").children("a").children("img").attr("src")
-        result.link = $(this).children("div.item-info").children("h2").children("a").attr("href")
-
-        console.log(result)
+        // Alternatively reload page
+        res.send("Scrape Complete")
     })
-    res.send("done")
 })
