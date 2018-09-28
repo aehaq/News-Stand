@@ -16,11 +16,30 @@
     <img class="card-img-top" src={{image}} alt="Card image cap">
     <div class="card-body">
         <p class="card-text"><a href={{link}} >{{title}}</a></p>
-        <button class="btn btn-info noteControl" id={{id}}> Notes </button>
+        <button class="btn btn-info noteControl" data-id={{id}} data-toggle="modal" data-target="#notesModal"> Notes </button>
     </div>
     </div>
 
 {{/each}}
+
+<div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Note</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="notes-modal">
+        {{!-- <ul id="notes-dest">
+            <li class="list-group-item">NOTE-TEXT-HERE<button class="btn btn-danger float-right" data-id="NOTE-ID-HERE"> Delete </button></li>
+        </ul>
+        <button type="button" class="btn btn-success" id="save-note" data-id="ARTICLE-ID-HERE" data-dismiss="modal">Save Note</button> --}}
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -30,7 +49,7 @@ $("#delete").on("click", function(event){
     event.preventDefault()
 
     $.ajax({
-        url: "/delete",
+        url: "articles/delete",
         type: 'DELETE'
     }).then(
         location.reload()
@@ -39,9 +58,77 @@ $("#delete").on("click", function(event){
 })
 
 $(".noteControl").on("click", function(event){
-    event.preventDefault()
+    event.preventDefault();
 
+    $("#notes-modal").empty()
 
+    queryUrl = "/articles/" + $(this).attr("data-id")
+
+    $.get(queryUrl, function( result ) {
+
+        var data = result[0];
+
+        console.log(data)
+
+        var noteList = $('<ul class="noteList">');
+        $("#notes-modal").append(noteList)
+
+        if(data.note) {
+
+            noteQuery = "/notes/" + data.note
+
+            $.get(noteQuery, function( note ) {
+                console.log("note: " +note)
+                var noteHTML = '<li class="list-group-item">'+note[0].text+'<button class="btn btn-danger note-delete float-right" data-id="'+note[0]._id+'" data-dismiss="modal"> Delete </button></li>'
+                $(".noteList").html(noteHTML)
+            })
+
+        }
+
+        var formHTML = '<textarea placeholder="Write a Note Here" class="form-control" id="note-text" rows="5"></textarea>'
+        var buttonHTML = '<button type="button" class="btn btn-success save-note" data-id="'+data._id+'" data-dismiss="modal">Save Note</button>'
+        var submitHTML = formHTML + buttonHTML;
+
+        var noteForm = $("<div>");
+
+        noteForm.html(submitHTML);
+
+        $('#notes-modal').append(noteForm)
+
+    })
+})
+
+$(document).on('click', '.save-note', function(event){
+    event.preventDefault();
+    console.log("button clicked")
+
+    var queryUrl = "/articles/" + $(this).attr("data-id")
+    var data = {
+        text: $("#note-text").val()
+    }
+    console.log(data)
+    
+    $.ajax({
+        url: queryUrl,
+        type: 'POST',
+        data: data
+    }).then(
+        $('#modalwindow').modal('hide')
+    );
+})
+
+$(document).on('click', '.note-delete', function(event){
+    event.preventDefault();
+
+    var queryUrl = "/notes/delete/" + $(this).attr("data-id")
+    
+    $('#modalwindow').modal('hide')
+
+    $.ajax({
+        url: queryUrl,
+        type: 'DELETE'
+    }).then(
+    );
 })
 
 </script>

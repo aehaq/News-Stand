@@ -66,8 +66,55 @@ router.get("/articles", function(req, res) {
     })
 });
 
-// CONSOLE LOG OUT BEFORE DEPLOYING
-router.delete("/delete", function(req, res) {
+router.get("/articles/:id", function(req, res) {
+    var reqId = req.params.id;
+
+    db.Article.find({ _id: reqId }).populate("Note")
+        .then(function(dbArticle) {
+            res.json(dbArticle)
+        })
+        .catch(function(err) {
+            res.json(err)
+        });
+})
+
+router.get("/notes/:id", function(req, res) {
+    var reqId = req.params.id;
+
+    db.Note.find({ _id: reqId }).populate("Note")
+        .then(function(note) {
+            res.json(note)
+        })
+        .catch(function(err) {
+            res.json(err)
+        });
+})
+
+router.post("/articles/:id", function(req, res) {
+
+    console.log("Req.Body: " + req.body)
+    db.Note.create(req.body)
+    .then(function(dbNote) {
+        return db.Article.findOneAndUpdate({ _id: req.params.id}, { $set: { note: dbNote._id } });
+    })
+    .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err)
+      })
+})
+
+router.delete("/notes/delete/:id", function(req, res) {
+
+    db.Note.deleteOne({  _id: req.params.id })
+    .then(function(response) {
+        res.json(response)
+    })
+
+})
+
+router.delete("/articles/delete", function(req, res) {
 
     db.Article.remove({}).then(response => console.log(response))
 
