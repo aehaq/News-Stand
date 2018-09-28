@@ -1,0 +1,47 @@
+<div class="jumbotron jumbotron-fluid">
+  <div class="container text-center">
+    <h1 class="display-4"> National Public Radio Article Scraper</h1> 
+    <p class="lead"> For people subscribe to the radio for the articles... </p> 
+    <hr class="my-2">
+    <a class="btn btn-primary btn-lg float-left" href="/scrape" role="button">Scrape New Articles</a>
+    <a class="btn btn-danger btn-lg float-right" id="delete" role="button">Delete All Articles</a>
+  </div>
+</div>
+
+<div class="container-fluid">
+
+{{#each articles}}
+
+    <div class="card float-left m-4 border-dark" style="width: 20rem; height: 24rem" >
+    <img class="card-img-top" src={{image}} alt="Card image cap">
+    <div class="card-body">
+        <p class="card-text"><a href={{link}} >{{title}}</a></p>
+        <button class="btn btn-info noteControl" id={{id}}> Notes </button>
+    </div>
+    </div>
+
+{{/each}}
+
+</div>
+
+<script>
+
+$("#delete").on("click", function(event){
+    event.preventDefault()
+
+    $.ajax({
+        url: "/delete",
+        type: 'DELETE'
+    }).then(
+        location.reload()
+    );
+
+})
+
+$(".noteControl").on("click", function(event){
+    event.preventDefault()
+
+
+})
+
+</script>

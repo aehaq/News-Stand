@@ -21,11 +21,6 @@ var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-// Set up Scraping Tools
-
-var axios = require("axios");
-var cheerio = require("cheerio");
-
 // Set up DataBase
 
 var mongoose = require("mongoose");
@@ -38,37 +33,10 @@ mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true }
 // mongoose.Promise = Promise;
 // mongoose.connect(MONGODB_URI);
 
-// Require all Models
-var db = require("./models")
+// Routing
+var routes = require("./router.js")
+app.use('/', routes);
 
-// Routes
-
-app.get("/", function(req, res) {
-    // display exphbs page with all data
-});
-
-app.get("/scrape", function(req,res) {
-    axios.get("https://www.npr.org/sections/news/").then(function(response) {
-        var $ = cheerio.load(response.data);
-    
-        $("article.has-image").each(function(i, element) {
-            var result = {};
-    
-            result.title = $(this).children("div.item-info").children("h2").children("a").text()
-            result.image = $(this).children("div.item-image").children("div.imagewrap").children("a").children("img").attr("src")
-            result.link = $(this).children("div.item-info").children("h2").children("a").attr("href")
-    
-            // Create a new Article object
-            db.Article.create(result)
-            .then(function(dbArticle) {
-                console.log(dbArticle)
-            })
-            .catch(function(err) {
-                return res.json(err);
-            });
-        });
-
-        // Alternatively reload page
-        res.send("Scrape Complete")
-    })
+app.listen(PORT, function () {
+    console.log("Server listening on : http://localhost:" + PORT);
 })
