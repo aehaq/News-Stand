@@ -26,12 +26,12 @@ app.set("view engine", "handlebars");
 var mongoose = require("mongoose");
 
     // Development database setup
-// mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true })
+mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true })
 
     // Depoyment database setup
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+// mongoose.Promise = Promise;
+// mongoose.connect(MONGODB_URI);
 
 // Routing
 var routes = require("./router.js")
