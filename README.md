@@ -2,7 +2,7 @@
 News-Stand is a full-stack web application which uses Axios.js and Cheerio to pull information from the NPR news section, stores those articles in a Mongo Database, and allow users to save comments on articles which are also stored using Mongo.
 
 # Link to Deployed Site
-// Coming Soon
+[Mongo News Stand](http://mongo-newstand.herokuapp.com/)
 
 # Images
 ![Preview](/public/assets/images/preview.PNG)
