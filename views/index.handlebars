@@ -10,17 +10,21 @@
 
 <div class="container-fluid">
 
-{{#each articles}}
+    <div class="row justify-content-center">
 
-    <div class="card float-left m-4 border-dark" style="width: 20rem; height: 24rem" >
-    <img class="card-img-top" src={{image}} alt="Card image cap">
-    <div class="card-body">
-        <p class="card-text"><a href={{link}} >{{title}}</a></p>
-        <button class="btn btn-info noteControl" data-id={{id}} data-toggle="modal" data-target="#notesModal"> Notes </button>
-    </div>
-    </div>
+    {{#each articles}}
 
-{{/each}}
+        <div class="card m-4 border-dark" style="width: 20rem; height: 24rem" >
+            <img class="card-img-top" src={{image}} alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text"><a href={{link}} >{{title}}</a></p>
+                <button class="btn btn-info noteControl" data-id={{id}} data-toggle="modal" data-target="#notesModal"> Notes </button>
+            </div>
+        </div>
+
+    {{/each}}
+
+    </div>
 
 <div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
