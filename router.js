@@ -30,10 +30,13 @@ router.get("/scrape", function(req,res) {
         $("article.has-image").each(function(i, element) {
             var result = {};
             
-            result.title = $(this).children("div.item-info").children("h2").children("a").text()
+            result.title = $(this).children("div.item-info-wrap").children("div.item-info").children("h2").children("a").text()
             result.image = $(this).children("div.item-image").children("div.imagewrap").children("a").children("img").attr("src")
-            result.link = $(this).children("div.item-info").children("h2").children("a").attr("href")
+            result.link = $(this).children("div.item-info-wrap").children("div.item-info").children("h2").children("a").attr("href")
             
+            // For quick debugging if NPR changes their layout again.
+            // console.log(result)
+
             // Check if an Article with that link already exists
             db.Article.findOne({ 'link': result.link}, function (err,item) {
                 console.log(item)
